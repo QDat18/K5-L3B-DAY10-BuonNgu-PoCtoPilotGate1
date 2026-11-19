@@ -6,12 +6,12 @@
     "NguyenLongVu-2A202603842",
     "NguyenVanAnhTrung-2A202603903"
   ],
-  "incident": "",
+  "incident": "S4",
   "decision_v1": "Tiếp tục",
-  "decision_v2": "",
+  "decision_v2": "Tiếp tục",
   "three_lines": {
-    "environment_assumption": "",
-    "reduce_or_prevent": "",
-    "measure_in_pilot": ""
+    "environment_assumption": "Đội ngầm giả định hạ tầng API của nhà cung cấp LLM luôn sẵn sàng 100% không bị nghẽn 429 và lượng ticket khiếu nại phân bổ đều trong ngày; thực tế các đêm Mega Sale luôn xảy ra nghẽn mạng cục bộ và ticket đổ dồn gấp 3 lần sau 20h.",
+    "reduce_or_prevent": "Gate của đội thực sự NGĂN ĐƯỢC tác hại vì cổng code write_gate nằm ngoài model chặn cứng mọi lệnh xuất tiền hoặc phạt hãng khi phát hiện sự kiện fallback fail_open hoặc lỗi do shop, đồng thời cổng config giới hạn ngân sách tự động ngắt hoàn tiền khi chạm mốc 300.000đ độc lập với ý chí của bot.",
+    "measure_in_pilot": "Cần đo lường lại trong pilot thật độ trễ phản hồi thực tế của nhân viên duyệt trong khung giờ đêm (20h-24h), tỷ lệ lỗi mạng/timeout thực tế của API LLM, và tỷ lệ khách hàng khiếu nại lại sau khi ca bị từ chối hoặc chuyển người duyệt."
   }
 }

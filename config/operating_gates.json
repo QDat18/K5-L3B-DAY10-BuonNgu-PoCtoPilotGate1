@@ -1,7 +1,7 @@
 {
   "_huong_dan": "Cổng kinh doanh, vận hành, pháp lý mà trợ lý PHẢI tuân theo. Bàn điền ở vòng 1, chốt bằng python3 -m lab10.checkpoint, rồi được sửa tiếp ở vòng 2. null = chưa đặt cổng này. Giải thích từng dòng: docs/guide.md, mục Cổng trong config (#ban-do).",
   "business": {
-    "daily_refund_cap_vnd": 1500000,
+    "daily_refund_cap_vnd": 300000,
     "cost_budget_per_ticket_vnd": 8000,
     "pilot_scope": {
       "mode": "all",
@@ -13,13 +13,13 @@
   "operations": {
     "pic": "NV-TUNG",
     "approver_id": "NV-HANH",
-    "reviewers_on_shift": 1,
-    "review_capacity_per_hour": 6,
+    "reviewers_on_shift": 2,
+    "review_capacity_per_hour": null,
     "max_queue_wait_minutes": 60,
     "stop_conditions": [
       "Khi có 1 lỗi ghi oan cho hãng vận chuyển thì tạm dừng công tắc file_carrier_fault",
       "Khi phát hiện rò rỉ dữ liệu cá nhân PII sang bên thứ ba thì tắt ngay công tắc notify_carrier",
-      "Khi tổng tiền hoàn trong ngày chạm trần 1.500.000đ thì dừng hoàn tự động và chuyển sang duyệt tay"
+      "Khi tổng tiền hoàn trong ngày chạm trần 300.000đ thì dừng hoàn tự động và chuyển sang duyệt tay"
     ],
     "alert_channel": "#ops-logix-alerts",
     "decision_note": false,

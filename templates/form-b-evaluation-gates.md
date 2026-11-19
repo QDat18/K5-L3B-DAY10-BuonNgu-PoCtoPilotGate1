@@ -380,6 +380,10 @@ Lượng ticket có thể dồn gấp ba trong một giờ (ngày sale, sau bão
 | Ngưỡng nào thì **thu hẹp** phạm vi (khoá `business.pilot_scope`) hoặc **tắt** một thao tác ghi (`config/switches.json`)? Ai quyết? | Khi hàng chờ người duyệt vượt quá 8 ca và thời gian chờ chạm mốc 50 phút (nguy cơ ùn tắc cao), hoặc tổng tiền hoàn trong ngày chạm mốc 1.200.000đ $\to$ Giám sát vận hành Lê Thanh Tùng (`NV-TUNG`) quyết định thu hẹp phạm vi pilot (chỉ chạy ở các kho ổn định như CT, DN) hoặc tạm tắt thao tác `file_carrier_fault` để giảm áp lực đối soát. |
 | Thêm người thì chi phí mỗi ticket và ROI thay đổi thế nào (đọc report)? | Khi thêm 1 người trực, chi phí phát sinh thêm gồm phí giữ chỗ 30.000đ/ca và chi phí xử lý ca chuyển người 10.000đ/ticket. Chi phí bình quân mỗi ticket sẽ tăng từ 4.203đ lên khoảng 5.500đ–6.200đ/ticket, ROI giảm nhẹ từ 1.34 xuống khoảng 0.75–0.95 (nhưng vẫn vượt xa ngưỡng tối thiểu cam kết `roi_min: 0.20` và trần ngân sách `cost_budget_per_ticket_vnd: 8.000đ`), đổi lại giữ vững SLA không để ca nào bị ùn (`queue_stuck = 0`). |
 
+*(Bổ sung sau khi bốc thẻ sự cố S4 - Đêm 11.11, bút khác màu):*
+- **Thực tế đêm 11.11 đối chiếu với bảng:** Lượng ticket dồn dập sau 20h với 41 ticket nối tiếp nhau, trong đó nhiều ca bể vỡ (`DAMAGED`), thất lạc (`LOST`) bot không được tự giải quyết nên đẩy hết sang hàng chờ. Do chỉ có duy nhất 1 nhân viên trực (`NV-HANH`, công suất 6 ca/giờ), hàng chờ bị tích tụ nghiêm trọng dẫn đến 4 ca bị ùn quá hạn và thời gian chờ lâu nhất lên tới 78.0 phút (vỡ SLA 60 phút).
+- **Hành động điều chỉnh cho Vòng 2:** Ngay lập tức áp dụng quy tắc tại dòng 2 & dòng 3 của bảng: Kích hoạt nhân viên trực thứ 2 (`reviewers_on_shift = 2`) trong `config/operating_gates.json` để nâng công suất ca trực lên 12 ca/giờ; đồng thời hạ trần hoàn tiền tự động trong ngày `business.daily_refund_cap_vnd` xuống 300.000đ theo đúng hạn mức Finance chốt riêng cho ngày 11.11.
+
 ---
 
 <a id="b8"></a>
