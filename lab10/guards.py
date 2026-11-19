@@ -39,4 +39,51 @@ def pre_guard(ctx):
 
 def write_gate(ctx, action):
     # action = {"tool": "issue_refund", "ticket_id":..., "order_id":..., "amount_vnd":..., "payer":..., ...}
+    tool = action.get("tool")
+
+    if tool == "issue_refund":
+        order_id = action.get("order_id")
+        order = ctx.tools.lookup_order(order_id)
+        if not order:
+            return Verdict.escalate("không tìm thấy đơn hàng trong hệ thống")
+
+        parcel = H.ticket_parcel(order, ctx.ticket, ctx.as_of)
+        delay = H.db_delay_days(parcel, ctx.as_of)
+        cause = parcel.get("delay_cause")
+        pol = H.effective_policy(ctx.tools.lookup_policies(), ctx.as_of)
+        if not pol:
+            return Verdict.escalate("không tìm thấy chính sách hoàn tiền có hiệu lực")
+
+        ent = H.entitlement_vnd(pol, order, delay, cause)
+
+        # Cổng 1: Chặn hoàn tiền khi không đủ điều kiện theo dữ liệu tracking DB
+        if ent <= 0 and action.get("amount_vnd", 0) > 0:
+            return Verdict.deny("đơn chưa đủ điều kiện hoàn tiền theo dữ liệu tracking DB")
+
+        # Điều chỉnh số tiền nếu vượt quá quyền lợi tính từ DB
+        if action.get("amount_vnd", 0) > ent:
+            return Verdict.modify("điều chỉnh số tiền hoàn về đúng quyền lợi theo DB", amount_vnd=ent)
+
+    elif tool == "file_carrier_fault":
+        order_id = action.get("order_id")
+        order = ctx.tools.lookup_order(order_id)
+        if order:
+            parcel = next((p for p in order.get("parcels", []) if p["parcel_id"] == action.get("parcel_id")), None) \
+                or H.ticket_parcel(order, ctx.ticket, ctx.as_of)
+            delay = H.db_delay_days(parcel, ctx.as_of)
+            pol = H.effective_policy(ctx.tools.lookup_policies(), ctx.as_of)
+            if pol:
+                # Cổng 2: Chặn phạt hãng nếu nguyên nhân không do hãng hoặc chưa đủ ngày trễ trên DB
+                if not H.carrier_at_fault(pol, parcel, delay):
+                    return Verdict.deny("không đủ điều kiện ghi lỗi hãng vận chuyển theo tracking DB")
+                if action.get("delay_days", 0) != delay:
+                    return Verdict.modify("sửa số ngày trễ phạt hãng về đúng số ngày trễ trên DB", delay_days=delay)
+
+    elif tool == "notify_carrier":
+        # Cổng 3: Bảo vệ dữ liệu cá nhân PII khi gửi thông báo cho bên thứ ba
+        payload = action.get("payload", {})
+        if "customer_note" in payload:
+            cleaned = {k: v for k, v in payload.items() if k != "customer_note"}
+            return Verdict.modify("loại bỏ ghi chú khách hàng để tránh rò rỉ dữ liệu cá nhân PII", payload=cleaned)
+
     return Verdict.allow()
