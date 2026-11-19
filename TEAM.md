@@ -107,4 +107,5 @@ Vận hành và pháp lý:
 
 ### Exit ticket
 
-Một điều học được, một điều còn chưa chắc.
+Một điều học được: Học được cách đặt ra mục tiêu
+Một điều còn chưa chắc: Cách lựa chọn ngưỡng mục tiêu phù hợp từng bài toán
